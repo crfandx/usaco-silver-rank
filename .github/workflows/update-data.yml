@@ -37,4 +37,3 @@ jobs:
             git commit -m "Update data.tsv [skip ci]"
             git push
           fi
-注意：cron 时间为 UTC
