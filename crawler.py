@@ -10,12 +10,13 @@ header = {
 
 PAGES = range(10, 15) # 抓取题目的页码
 PROBLEM_IDS = list(range(1201, 1427)) # 要抓取题目的编号
-PROBLEM_NUM = len(PROBLEM_IDS) # 要抓取题目的数量
 # 要抓取 AC 记录的用户
 USER_UIDS = [653, 339, 474, 494, 488, 216, 465, 478, 
             482, 481, 338, 333, 479, 335, 486, 331, 
             329, 307, 340, 336, 208, 222, 487, 495, 
             214, 468, 470, 197, 167, 469, 282, 143, 177, 189]
+USER_NUM = len(USER_UIDS)
+PROBLEM_NUM = len(PROBLEM_IDS)
 problem_names = []
 users = []
 
@@ -33,7 +34,10 @@ def get_problems(file):
                 problem_names.append(name)
 
         sleep(0.1)
-    
+
+    if len(problem_names) != PROBLEM_NUM:
+        logging.warning(f"The number of problems from OJ is different from the number of problems from input. {len(problem_names)}/{PROBLEM_NUM}")
+
     buf = ""
     for id in PROBLEM_IDS:
         buf += f"{id}\t"
@@ -46,14 +50,17 @@ def get_problems(file):
     file.write(buf)
 
 def get_user_status(file):
+    order = 0
     for uid in USER_UIDS:
         url = f"http://oi.bashu.cn/d/junior/user/{uid}#tab-1"
         response = requests.get(url, headers=header)
         soup = BeautifulSoup(response.text, 'html.parser')
         username = soup.select_one("h1").get_text(strip=True).split("(")[0]
+
         if username == "登录":
-            logging.warning("The website needs logging in.")
-            continue
+            logging.error("Fail to log in.")
+            raise RuntimeError("Fail to log in.")
+        
         status = [0] * PROBLEM_NUM
         AC_problem_ids = soup.select("a")
         for id in AC_problem_ids:
@@ -69,7 +76,8 @@ def get_user_status(file):
                     status[index] = 1
                     logging.info(f"User {username} has AC a problem. id: {AC_problem_id}")
         AC_problem_num = status.count(1)
-        logging.info(f"User {username} has AC {AC_problem_num} problem(s).")
+        order += 1
+        logging.info(f"User {username} has AC {AC_problem_num} problem(s). {order}/{USER_NUM}")
         global users
         user = [0, username, AC_problem_num] + status.copy()
         users.append(user)
@@ -92,9 +100,11 @@ import os
 def main():
     sid = os.environ.get('SID')
     sid_sig = os.environ.get('SID_SIG')
+    
     if not sid or not sid_sig:
         logging.error("Missing SID or SID_SIG environment variables.")
         raise ValueError("Missing SID or SID_SIG environment variables.")
+    
     header["Cookie"] = f"sid={sid}; sid.sig={sid_sig}"
     logging.basicConfig(level=logging.INFO)
     logging.info("Begin to crawl the problems and the users' statuses.")
