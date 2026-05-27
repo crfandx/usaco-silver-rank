@@ -1,4 +1,4 @@
-定时（UTC+8:00 00:00 ~ 02:00）爬取 Bashu OJ 上题库中的 USACO Silver 题目，对指定用户的 AC 数量进行排名。crawler.py 输出到 data.tsv 中，index.html 显示。
+定时在凌晨（UTC+8:00）爬取 Bashu OJ 上题库中的 USACO Silver 题目，对指定用户的 AC 数量进行排名。crawler.py 输出到 data.tsv 中，index.html 显示。
 
 TSV 格式：
 
