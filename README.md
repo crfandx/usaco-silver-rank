@@ -10,6 +10,5 @@ TSV 格式：
 **声明**：本程序对 Bashu OJ 影响微乎其微，不会触发限流。**AC 数据不是敏感数据，它可以在个人主页看见，本程序仅仅是整合了数据。**
 
 AI 使用声明，以下文件由 AI 编写：
-
 - index.html
 - .github/workflows/update-data.yml
