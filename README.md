@@ -1,4 +1,4 @@
-定时（UTC+8:00 00:00 ~ 02:00）爬取 Bashu OJ 上题库中的 USACO Silver 题目，对指定用户的 AC 数量进行排名。crawler.py 输出到 data.tsv 中，index.html 显示。
+定时爬取 Bashu OJ 上题库中的 USACO Silver 题目，对指定用户的 AC 数量进行排名。crawler.py 输出到 data.tsv 中，index.html 显示。
 
 TSV 格式：
 
@@ -7,4 +7,9 @@ TSV 格式：
 - 第三行及以后：
   - 第一列代表序号，第二列代表用户名，第三列代表完成的题目数量，后面表示该用户该列表示题题目是否完成，完成用 1，未完成用 0，显示时显示成对勾和减号。
 
-声明：本程序在凌晨爬取数据，对 Bashu OJ 影响微乎其微，且有延迟爬取，不会触发限流。AC 数据不是敏感数据，它可以在个人主页看见，本程序仅仅是整合了数据。
+**声明**：本程序对 Bashu OJ 影响微乎其微，不会触发限流。**AC 数据不是敏感数据，它可以在个人主页看见，本程序仅仅是整合了数据。**
+
+AI 使用声明，以下文件由 AI 编写：
+
+- index.html
+- .github/workflows/update-data.yml

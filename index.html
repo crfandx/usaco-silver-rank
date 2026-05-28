@@ -27,6 +27,7 @@
         /* wrapper provides scrollbars when table is wider than container */
         #table-wrap {
             overflow: auto;
+            max-height: calc(100vh - 160px); /* ensure vertical scrolling inside wrapper so sticky header works */
         }
 
         table {
@@ -42,6 +43,7 @@
             vertical-align: middle;
             width: var(--cell-width);
             box-sizing: border-box;
+            background: #fff;
         }
 
         th.username,
@@ -51,7 +53,46 @@
 
         thead th {
             font-weight: 700;
+            position: sticky;
+            top: 0;
+            background: #fff;
+            z-index: 11;
+            border-bottom: 1px solid var(--border); /* explicit bottom border to avoid gaps */
+            background-clip: padding-box;
+            transform: translateZ(0); /* avoid sub-pixel antialias transparency */
+            will-change: transform;
         }
+
+        /* frozen columns (first and second) */
+        .frozen-col {
+            position: sticky;
+            z-index: 6;
+            background: #fff;
+            border-right: 1px solid var(--border); /* explicit right border */
+            background-clip: padding-box;
+            transform: translateZ(0);
+            will-change: transform;
+        }
+
+        .frozen-col-0 {
+            left: 0;
+        }
+
+        .frozen-col-1 {
+            left: calc(var(--cell-width));
+        }
+
+        /* ensure header cells in frozen columns sit above other frozen cells */
+        thead th.frozen-col {
+            z-index: 12;
+            border-right: 1px solid var(--border);
+        }
+
+        /* body frozen cells sit under headers but above normal cells */
+        tbody td.frozen-col { z-index: 8; }
+
+        /* fallback: use outline on sticky elements when browser has subpixel issues */
+        thead th, .frozen-col { outline: 0 solid transparent; }
 
         td:not(.username),
         th:not(.username) {
@@ -130,7 +171,12 @@
             idRow.forEach((h, i) => {
                 const th = document.createElement('th');
                 th.textContent = h;
-                if (i === 1) th.classList.add('username');
+                if (i === 0) {
+                    th.classList.add('frozen-col', 'frozen-col-0');
+                }
+                if (i === 1) {
+                    th.classList.add('username', 'frozen-col', 'frozen-col-1');
+                }
                 if (i >= 3 && nameRow[i] && nameRow[i].trim() !== '') {
                     th.title = nameRow[i];
                     th.setAttribute('data-has-name', '1');
@@ -145,7 +191,8 @@
                 const tr = document.createElement('tr');
                 cells.forEach((c, j) => {
                     const td = document.createElement('td');
-                    if (j === 1) td.classList.add('username');
+                    if (j === 0) td.classList.add('frozen-col', 'frozen-col-0');
+                    if (j === 1) td.classList.add('username', 'frozen-col', 'frozen-col-1');
                     if (j >= 3) {
                         const v = c.trim();
                         if (v === '1') {

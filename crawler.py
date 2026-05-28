@@ -86,7 +86,10 @@ def get_user_status(file):
     
     users = sorted(users, key=lambda x: -x[2])
     for rank in range(len(users)):
-        users[rank][0] = rank + 1
+        if rank > 0 and users[rank][2] == users[rank - 1][2]:
+            users[rank][0] = users[rank - 1][0]
+        else:
+            users[rank][0] = rank + 1
     for user in users:
         buf = ""
         for element in user:
