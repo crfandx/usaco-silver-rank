@@ -110,13 +110,13 @@ def main():
     
     header["Cookie"] = f"sid={sid}; sid.sig={sid_sig}"
     logging.basicConfig(level=logging.INFO)
-    logging.info("Begin to crawl the problems and the users' statuses.")
+    logging.info("Begin to crawl the problems and the statuses.")
     with open("data.tsv", "w", encoding="utf-8") as file:
         file.write("排名\t用户名\tAC 数量\t")
         get_problems(file)
         logging.info("All the problems have been crawled.")
         get_user_status(file)
-        logging.info("All the users' statuses have been crawled.")
+        logging.info("All the statuses have been crawled.")
 
 if __name__ == "__main__":
     main()
