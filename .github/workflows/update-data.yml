@@ -10,22 +10,22 @@ jobs:
   crawl:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
         with:
-          python-version: '3.11'
+          enable-cache: true
 
-      - name: Install dependencies
-        run: pip install -r requirements.txt
+      - name: Set up Python
+        run: uv python install 3.11
 
       - name: Run crawler
         env:
           SID: ${{ secrets.SID }}
           SID_SIG: ${{ secrets.SID_SIG }}
-        run: python crawler.py
+        run: uv run python crawler.py
 
       - name: Commit and push if changed
         run: |
