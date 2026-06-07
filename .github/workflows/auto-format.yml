@@ -37,7 +37,7 @@ jobs:
           isort .
 
       - name: Format Frontend
-        run: prettier --write "**/*.html" "**/*.css" "**/*.js"
+        run: prettier --write "**/*.html"
 
       - name: Commit changes
         uses: stefanzweifel/git-auto-commit-action@v5
