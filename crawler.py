@@ -8,13 +8,14 @@ header = {
     "Cookie": "",
 }
 
-PAGES = range(10, 15) # 抓取题目的页码
-PROBLEM_IDS = list(range(1201, 1427)) # 要抓取题目的编号
-# 要抓取 AC 记录的用户
+# Custom settings
+PAGES = range(10, 15)
+PROBLEM_IDS = list(range(1201, 1427))
 USER_UIDS = [653, 339, 474, 494, 488, 216, 465, 478, 
             482, 481, 338, 333, 479, 335, 486, 331, 
             329, 307, 340, 336, 208, 222, 487, 495, 
             214, 468, 470, 197, 167, 469, 282, 143, 177, 189]
+
 USER_NUM = len(USER_UIDS)
 PROBLEM_NUM = len(PROBLEM_IDS)
 problem_names = []
@@ -27,9 +28,17 @@ def get_problems(file):
         soup = BeautifulSoup(response.text, 'html.parser')
         problems = soup.select("td.col--problem-name")
         for problem in problems:
-            id = int(problem.select_one("b").get_text(strip=True))
+            id_tag = problem.select_one("b")
+            if id_tag is None:
+                logging.error("id_tag is None")
+                raise RuntimeError("id_tag is None")
+            id = id_tag.get_text(strip=True)
             if id in PROBLEM_IDS:
-                name = problem.select_one("a").contents[1].get_text(strip=True)
+                name_tag = problem.select_one("a")
+                if name_tag is None:
+                    logging.error("name_tag is None")
+                    raise RuntimeError("name_tag is None")
+                name = name_tag.contents[1].get_text(strip=True)
                 logging.info(f"A problem has been crawled. id: {id}, name: {name}")
                 problem_names.append(name)
 
@@ -42,7 +51,7 @@ def get_problems(file):
     for id in PROBLEM_IDS:
         buf += f"{id}\t"
     buf = buf.strip()
-    buf += "\n114514\t114514\t114514\t" # 114514 占位用
+    buf += "\ndefault\tdefault\tdefault\t"
     for name in problem_names:
         buf += f"{name}\t"
     buf = buf.strip()
@@ -55,7 +64,12 @@ def get_user_status(file):
         url = f"http://oi.bashu.cn/d/junior/user/{uid}#tab-1"
         response = requests.get(url, headers=header)
         soup = BeautifulSoup(response.text, 'html.parser')
-        username = soup.select_one("h1").get_text(strip=True).split("(")[0]
+        username_tag = soup.select_one("h1")
+        if username_tag is None:
+            logging.error("username_tag is None.")
+            raise RuntimeError("username_tag is None")
+
+        username = username_tag.get_text(strip=True).split("(")[0]
 
         if username == "登录":
             logging.error("Fail to log in.")
