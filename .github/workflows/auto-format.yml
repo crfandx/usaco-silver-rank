@@ -1,0 +1,47 @@
+name: Auto Format
+
+on:
+  push:
+    branches: [master]
+    paths-ignore:
+      - 'data.tsv'
+
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Prettier
+        run: npm install -g prettier
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install Python formatters
+        run: pip install black isort
+
+      - name: Format Python
+        run: |
+          black .
+          isort .
+
+      - name: Format Frontend
+        run: prettier --write "**/*.html" "**/*.css" "**/*.js"
+
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "style: auto-format code [skip ci]"
+          commit_user_name: "github-actions"
+          commit_user_email: "actions@github.com"
