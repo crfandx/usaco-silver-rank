@@ -66,7 +66,7 @@ def get_problems(file):
             if id_tag is None:
                 logging.error("id_tag is None")
                 raise RuntimeError("id_tag is None")
-            id = id_tag.get_text(strip=True)
+            id = int(id_tag.get_text(strip=True))
             if id in PROBLEM_IDS:
                 name_tag = problem.select_one("a")
                 if name_tag is None:
