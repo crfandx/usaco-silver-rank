@@ -35,7 +35,7 @@ jobs:
           if git diff --staged --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "Update data.tsv [skip ci]"
+            git commit -m "dist: Update data.tsv [skip ci]"
             git push
           fi
 
