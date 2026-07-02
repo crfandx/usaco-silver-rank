@@ -73,7 +73,7 @@ def get_problems(file):
                     logging.error("name_tag is None")
                     raise RuntimeError("name_tag is None")
                 name = name_tag.contents[1].get_text(strip=True)
-                logging.info(f"A problem has been crawled. id: {id}, name: {name}")
+                logging.info(f"A problem has been crawled (pid: {id}, name: {name})")
                 problem_names.append(name)
 
         sleep(0.1)
@@ -126,12 +126,12 @@ def get_user_status(file):
                     index = PROBLEM_IDS.index(AC_problem_id)
                     status[index] = 1
                     logging.info(
-                        f"User {username} has AC a problem. id: {AC_problem_id}"
+                        f"User {username} (uid: {uid}) has accepted a problem (name: {problem_names[index]}, pid: {AC_problem_id})."
                     )
         AC_problem_num = status.count(1)
         order += 1
         logging.info(
-            f"User {username} has AC {AC_problem_num} problem(s). {order}/{USER_NUM}"
+            f"User {username} (uid: {uid}) has accepted {AC_problem_num} problem(s). {order}/{USER_NUM}"
         )
         global users
         user = [0, username, AC_problem_num] + status.copy()
@@ -171,9 +171,7 @@ def main():
     with open("data.tsv", "w", encoding="utf-8") as file:
         file.write("排名\t用户名\tAC 数量\t")
         get_problems(file)
-        logging.info("All the problems have been crawled.")
         get_user_status(file)
-        logging.info("All the statuses have been crawled.")
 
 
 if __name__ == "__main__":
