@@ -2,7 +2,7 @@ name: Auto Format
 
 on:
   push:
-    branches: [master]
+    branches: [master, test]
     paths-ignore:
       - 'data.tsv'
 
@@ -13,19 +13,19 @@ jobs:
       contents: write
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: 20
 
       - name: Install Prettier
         run: npm install -g prettier
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: '3.11'
           
@@ -41,7 +41,7 @@ jobs:
         run: prettier --write "**/*.html"
 
       - name: Commit changes
-        uses: stefanzweifel/git-auto-commit-action@v5
+        uses: stefanzweifel/git-auto-commit-action@v7
         with:
           commit_message: "style: auto-format code [skip ci]"
           commit_user_name: "github-actions"
